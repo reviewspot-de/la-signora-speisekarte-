@@ -1,0 +1,1753 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>La Signora – Digitale Speisekarte</title>
+<style>
+:root{
+  --bg:#080808;
+  --panel:#111111;
+  --panel2:#151515;
+  --text:#f4efe6;
+  --muted:#aba399;
+  --line:#2b2b2b;
+  --softline:#202020;
+  --green:#2b744c;
+  --red:#9b3f45;
+  --cream:#eadfcf;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 15% 18%,rgba(43,116,76,.08),transparent 28rem),
+    radial-gradient(circle at 90% 58%,rgba(155,63,69,.06),transparent 26rem),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+body.lock{overflow:hidden}
+a{color:inherit}
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  display:grid;place-items:center;
+  background:#000;
+  transition:opacity .28s ease,visibility .28s ease;
+}
+#splash.hide{opacity:0;visibility:hidden}
+.splash-inner{text-align:center;padding:28px}
+.splash-kicker{
+  margin-bottom:14px;
+  font-size:11px;font-weight:650;letter-spacing:.34em;text-transform:uppercase;
+  color:#a39b91;
+}
+.splash-name{
+  margin:0;
+  font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;
+  font-size:clamp(58px,15vw,96px);
+  line-height:.92;
+  font-weight:500;
+  color:var(--cream);
+}
+.tricolore{
+  width:126px;height:5px;margin:20px auto 23px;display:grid;
+  grid-template-columns:1fr 1fr 1fr;overflow:hidden;border-radius:999px;
+}
+.tricolore i:nth-child(1){background:var(--green)}
+.tricolore i:nth-child(2){background:#e9e7e1}
+.tricolore i:nth-child(3){background:var(--red)}
+.splash-sub{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(24px,6vw,34px);
+  color:#e8e1d7;
+}
+.hero{
+  min-height:44vh;
+  display:flex;align-items:flex-end;
+  border-bottom:1px solid var(--line);
+  position:relative;overflow:hidden;
+}
+.hero:before{
+  content:"";
+  position:absolute;inset:0;
+  background:
+    linear-gradient(120deg,rgba(255,255,255,.035),transparent 42%),
+    radial-gradient(circle at 85% 20%,rgba(255,255,255,.055),transparent 24rem);
+  pointer-events:none;
+}
+.hero:after{
+  content:"LA SIGNORA";
+  position:absolute;
+  right:-20px;bottom:-28px;
+  font-family:Georgia,serif;
+  font-size:clamp(60px,16vw,150px);
+  letter-spacing:.04em;
+  color:rgba(255,255,255,.025);
+  white-space:nowrap;
+}
+.hero-inner{
+  width:min(980px,100%);
+  margin:0 auto;padding:76px 18px 46px;
+  position:relative;z-index:1;
+}
+.hero-kicker{
+  font-size:11px;font-weight:650;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--muted);
+}
+.hero h1{
+  margin:10px 0 8px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(46px,10vw,82px);
+  font-weight:500;line-height:.98;
+}
+.hero p{margin:0;color:var(--muted);font-size:16px}
+.flagline{width:132px;height:4px;margin-top:24px;border-radius:99px;background:linear-gradient(90deg,var(--green) 0 33%,#ddd 33% 66%,var(--red) 66%)}
+.sticky-nav{
+  position:sticky;top:0;z-index:60;
+  border-bottom:1px solid var(--line);
+  background:rgba(8,8,8,.92);
+  backdrop-filter:blur(16px);
+}
+.nav-scroll{
+  width:min(1040px,100%);
+  margin:auto;
+  display:flex;gap:9px;overflow-x:auto;
+  padding:11px 14px;
+  scrollbar-width:none;
+}
+.nav-scroll::-webkit-scrollbar{display:none}
+.nav-scroll a{
+  flex:0 0 auto;
+  text-decoration:none;
+  border:1px solid #343434;
+  background:#121212;
+  color:#e9e2d8;
+  border-radius:999px;
+  padding:9px 13px;
+  font-size:13px;
+  transition:.18s ease;
+}
+.nav-scroll a:hover,.nav-scroll a:focus{background:#1b1b1b;border-color:#575757}
+.menu-wrap{
+  width:min(960px,100%);
+  margin:auto;
+  padding:22px 14px 90px;
+}
+.menu-section{
+  scroll-margin-top:68px;
+  position:relative;
+  overflow:hidden;
+  margin:18px 0;
+  padding:28px 18px 20px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:
+    linear-gradient(140deg,rgba(255,255,255,.025),transparent 28%),
+    linear-gradient(180deg,var(--panel2),var(--panel));
+  box-shadow:0 18px 60px rgba(0,0,0,.14);
+}
+.menu-section:before{
+  content:"";
+  position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--green),rgba(255,255,255,.45),var(--red));
+  opacity:.9;
+}
+.menu-section:after{
+  content:attr(data-watermark);
+  position:absolute;
+  right:-8px;top:4px;
+  font-family:Georgia,serif;
+  font-weight:600;
+  font-size:clamp(48px,12vw,108px);
+  color:rgba(255,255,255,.025);
+  letter-spacing:.05em;
+  pointer-events:none;
+}
+.section-header{
+  position:relative;z-index:2;
+  display:flex;align-items:flex-start;gap:14px;
+  padding:0 0 20px;border-bottom:1px solid var(--line);
+}
+.section-index{
+  width:42px;height:42px;display:grid;place-items:center;
+  border:1px solid #3a3a3a;border-radius:50%;
+  color:#aaa198;font-size:12px;font-weight:700;letter-spacing:.08em;
+}
+.section-kicker{
+  color:#8f887f;font-size:11px;text-transform:uppercase;letter-spacing:.22em;margin-bottom:5px;
+}
+.section-header h2{
+  margin:0;
+  font-family:Georgia,"Times New Roman",serif;
+  font-weight:500;
+  font-size:clamp(30px,7vw,44px);
+  line-height:1;
+}
+.dish-list{position:relative;z-index:2}
+.dish{
+  display:grid;
+  grid-template-columns:42px 1fr;
+  gap:10px;
+  padding:16px 0;
+  border-bottom:1px solid var(--softline);
+}
+.dish:last-child{border-bottom:0}
+.num{
+  padding-top:2px;
+  color:#77716a;
+  font-size:12px;font-weight:750;
+  font-variant-numeric:tabular-nums;
+}
+.dish-top{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  column-gap:12px;
+  align-items:start;
+}
+.dish h3{
+  margin:0;
+  font-size:16px;
+  line-height:1.28;
+  font-weight:670;
+  color:#f1ece4;
+}
+.price{
+  font-size:16px;font-weight:760;
+  color:var(--cream);
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.size{
+  grid-column:1/2;
+  margin-top:5px;
+  color:#888079;
+  font-size:12px;
+}
+.desc{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:13.5px;
+  line-height:1.48;
+  max-width:690px;
+}
+.note-box{
+  position:relative;z-index:2;
+  margin-top:18px;padding:14px 15px;
+  border:1px solid #303030;border-radius:16px;
+  background:rgba(255,255,255,.022);
+  color:#b9b1a7;
+  font-size:12.5px;line-height:1.55;
+}
+.note-box ul{margin:0;padding-left:18px}
+.note-box li+li{margin-top:5px}
+.closing{
+  width:min(960px,calc(100% - 28px));
+  margin:0 auto 80px;
+  padding:32px 22px;
+  text-align:center;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:linear-gradient(180deg,#121212,#0d0d0d);
+}
+.closing blockquote{
+  margin:0;
+  font-family:Georgia,"Times New Roman",serif;
+  font-style:italic;
+  font-size:clamp(28px,7vw,44px);
+  color:var(--cream);
+}
+.closing .translation{color:var(--muted);margin:9px 0 22px;font-size:13px}
+.closing p{color:#aaa299;font-size:13px;line-height:1.6;margin:8px 0}
+footer{
+  border-top:1px solid var(--line);
+  padding:34px 18px 50px;text-align:center;color:#817a72;font-size:12px;
+}
+.floating{
+  position:fixed;z-index:80;right:16px;bottom:18px;
+  border:1px solid #3b3b3b;background:rgba(19,19,19,.94);
+  color:#eee7dc;border-radius:999px;
+  padding:12px 15px;font-weight:700;font-size:13px;
+  backdrop-filter:blur(14px);box-shadow:0 12px 34px rgba(0,0,0,.35);
+  cursor:pointer;
+}
+.drawer-backdrop{
+  position:fixed;inset:0;z-index:89;background:rgba(0,0,0,.6);
+  opacity:0;visibility:hidden;transition:.2s ease;
+}
+.drawer{
+  position:fixed;left:12px;right:12px;bottom:12px;z-index:90;
+  max-height:min(72vh,680px);overflow:auto;
+  padding:16px;border-radius:24px;
+  border:1px solid #363636;
+  background:#111;
+  transform:translateY(110%);transition:.25s ease;
+  box-shadow:0 22px 70px rgba(0,0,0,.55);
+}
+.drawer.open{transform:translateY(0)}
+.drawer-backdrop.open{opacity:1;visibility:visible}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 12px}
+.drawer-head strong{font-family:Georgia,serif;font-size:24px;font-weight:500}
+.drawer-close{border:0;background:#202020;color:#eee;width:36px;height:36px;border-radius:50%;font-size:20px}
+.drawer-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.drawer-link{
+  display:flex;gap:10px;align-items:center;text-decoration:none;
+  padding:13px;border:1px solid #2b2b2b;border-radius:15px;background:#161616;
+  font-size:13px;
+}
+.drawer-link span{color:#77716a;font-size:11px;font-weight:700}
+@media(min-width:760px){
+  .menu-section{padding:32px 28px 24px;margin:24px 0}
+  .dish{grid-template-columns:48px 1fr;padding:17px 0}
+  .dish h3,.price{font-size:17px}
+  .desc{font-size:14px}
+  .floating{display:none}
+  .nav-scroll{justify-content:flex-start}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #splash{transition:none}
+  .drawer,.drawer-backdrop{transition:none}
+}
+</style>
+</head>
+<body class="lock">
+
+<div id="splash" aria-hidden="true">
+  <div class="splash-inner">
+    <div class="splash-kicker">Ristorante</div>
+    <h1 class="splash-name">La Signora</h1>
+    <div class="tricolore"><i></i><i></i><i></i></div>
+    <div class="splash-sub">Digitale Speisekarte</div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-kicker">Ristorante · Neuried</div>
+    <h1>La Signora</h1>
+    <p>Digitale Speisekarte</p>
+    <div class="flagline"></div>
+  </div>
+</header>
+
+<nav class="sticky-nav" aria-label="Kategorien">
+  <div class="nav-scroll">
+    <a href="#aperitivo">Aperitivo</a>
+<a href="#antipasti">Antipasti</a>
+<a href="#zuppe">Zuppe</a>
+<a href="#insalate">Insalate</a>
+<a href="#pasta">Pasta</a>
+<a href="#risotto">Risotto</a>
+<a href="#alforno">Specialità al Forno</a>
+<a href="#pizze">Pizze</a>
+<a href="#vitello">Carne di Vitello</a>
+<a href="#manzo">Carne di Manzo</a>
+  </div>
+</nav>
+
+<main class="menu-wrap">
+  
+<section class="menu-section" id="aperitivo" data-watermark="APERITIVO">
+  <div class="section-header">
+    <div class="section-index">01</div>
+    <div>
+      <div class="section-kicker">Aperitif</div>
+      <h2>Aperitivo</h2>
+    </div>
+  </div>
+  <div class="dish-list">
+    
+      <article class="dish">
+        <div class="num">1</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Campari Soda*</h3>
+            <span class="size">5 cl</span>
+            <div class="price">4,50 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">2</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Campari Orange*</h3>
+            <span class="size">5 cl</span>
+            <div class="price">5,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">3</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Martini weiß oder rot</h3>
+            <span class="size">5 cl</span>
+            <div class="price">3,50 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">4</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Hugo</h3>
+            <span class="size">10 cl</span>
+            <div class="price">5,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">5</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Aperitivo Signora</h3>
+            <span class="size">10 cl</span>
+            <div class="price">6,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">6</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Bitter San Pellegrino</h3>
+            <span class="size">5 cl</span>
+            <div class="price">3,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">7</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Prosecco Valdo</h3>
+            <span class="size">10 cl</span>
+            <div class="price">4,50 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">8</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Prosecco Cassis</h3>
+            <span class="size">10 cl</span>
+            <div class="price">5,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">9</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Prosecco Crodino</h3>
+            <span class="size">10 cl</span>
+            <div class="price">4,50 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">10</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Aperol Spritz*</h3>
+            <span class="size">10 cl</span>
+            <div class="price">5,50 €</div>
+          </div>
+          
+        </div>
+      </article>
+  </div>
+  <div class="note-box"><ul><li>Zwischen Nr. 6 und Nr. 7 ist auf der gedruckten Karte „Alkoholfrei“ vermerkt.</li><li>* Farbstoff</li></ul></div>
+</section>
+
+<section class="menu-section" id="antipasti" data-watermark="ANTIPASTI">
+  <div class="section-header">
+    <div class="section-index">02</div>
+    <div>
+      <div class="section-kicker">Vorspeisen</div>
+      <h2>Antipasti</h2>
+    </div>
+  </div>
+  <div class="dish-list">
+    
+      <article class="dish">
+        <div class="num">14</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizzabrot</h3>
+            
+            <div class="price">4,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">15</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Insalata Caprese</h3>
+            
+            <div class="price">12,00 €</div>
+          </div>
+          <p class="desc">Mozzarella mit Tomaten, Basilikum und Brot</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">16</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Prosciutto crudo e melone*</h3>
+            
+            <div class="price">14,50 €</div>
+          </div>
+          <p class="desc">Rohschinken mit Melone und Brot</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">17</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Carpaccio Cipriani</h3>
+            
+            <div class="price">16,00 €</div>
+          </div>
+          <p class="desc">Rinderfilet Carpaccio mit Toast</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">18</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Lachs Carpaccio</h3>
+            
+            <div class="price">15,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">19</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Antipasto misto</h3>
+            
+            <div class="price">15,00 €</div>
+          </div>
+          <p class="desc">Gemischter Vorspeiseteller mit Brot</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">20</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Insalata di polpo</h3>
+            
+            <div class="price">18,00 €</div>
+          </div>
+          <p class="desc">Oktopussalat</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">21</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Bruschetta</h3>
+            
+            <div class="price">5,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+  </div>
+  <div class="note-box"><ul><li>* nach Saison</li></ul></div>
+</section>
+
+<section class="menu-section" id="zuppe" data-watermark="ZUPPE">
+  <div class="section-header">
+    <div class="section-index">03</div>
+    <div>
+      <div class="section-kicker">Suppen</div>
+      <h2>Zuppe</h2>
+    </div>
+  </div>
+  <div class="dish-list">
+    
+      <article class="dish">
+        <div class="num">25</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Minestrone</h3>
+            
+            <div class="price">5,00 €</div>
+          </div>
+          <p class="desc">Italienische Gemüsesuppe</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">26</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Zuppa al pomodoro</h3>
+            
+            <div class="price">5,00 €</div>
+          </div>
+          <p class="desc">Tomatencremesuppe</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">27</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Minestra di cipolle</h3>
+            
+            <div class="price">5,00 €</div>
+          </div>
+          <p class="desc">Zwiebelsuppe</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">28</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Zuppa di tortellini</h3>
+            
+            <div class="price">6,00 €</div>
+          </div>
+          <p class="desc">Tortellinisuppe</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">29</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Zuppa stracciatella</h3>
+            
+            <div class="price">5,00 €</div>
+          </div>
+          <p class="desc">Klare Brühe mit Ei</p>
+        </div>
+      </article>
+  </div>
+  
+</section>
+
+<section class="menu-section" id="insalate" data-watermark="INSALATE">
+  <div class="section-header">
+    <div class="section-index">04</div>
+    <div>
+      <div class="section-kicker">Salate</div>
+      <h2>Insalate</h2>
+    </div>
+  </div>
+  <div class="dish-list">
+    
+      <article class="dish">
+        <div class="num">35</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Kleiner grüner Salat</h3>
+            
+            <div class="price">3,50 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">36</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Großer grüner Salat</h3>
+            
+            <div class="price">6,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">37</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Kleiner gemischter Salat</h3>
+            
+            <div class="price">7,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">38</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Großer gemischter Salat</h3>
+            
+            <div class="price">8,00 €</div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">39</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Insalata mimosa</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">mit Rucola, Feldsalat, Schafskäse, Oliven und frische Champignons</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">40</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Kleiner italienischer Salat</h3>
+            
+            <div class="price">8,00 €</div>
+          </div>
+          <p class="desc">mit gekochtem Schinken, Käse und Ei</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">41</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Großer italienischer Salat</h3>
+            
+            <div class="price">10,00 €</div>
+          </div>
+          <p class="desc">mit gekochtem Schinken, Käse und Ei</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">42</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Kleiner Nizza Salat</h3>
+            
+            <div class="price">8,50 €</div>
+          </div>
+          <p class="desc">mit Thunfisch</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">43</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Großer Nizza Salat</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">mit Thunfisch</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">44</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Salat Signora</h3>
+            
+            <div class="price">12,50 €</div>
+          </div>
+          <p class="desc">mit Shrimps, Thunfisch, Nüsse, Käse, gekochtem Schinken und Oliven</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">45</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Salat mit Putenstreifen</h3>
+            
+            <div class="price">11,50 €</div>
+          </div>
+          <p class="desc">mit Champignons und Bratsauce</p>
+        </div>
+      </article>
+  </div>
+  <div class="note-box"><ul><li>Alle Salate werden frisch nach Saison zubereitet und mit hausgemachtem Dressing serviert, nach Wunsch auch mit Essig und Öl.</li></ul></div>
+</section>
+
+<section class="menu-section" id="pasta" data-watermark="PASTA">
+  <div class="section-header">
+    <div class="section-index">05</div>
+    <div>
+      <div class="section-kicker">Nudelgerichte</div>
+      <h2>Pasta</h2>
+    </div>
+  </div>
+  <div class="dish-list">
+    
+      <article class="dish">
+        <div class="num">52</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Spaghetti/Rigatoni bolognese</h3>
+            
+            <div class="price">10,00 €</div>
+          </div>
+          <p class="desc">mit Hackfleischsauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">53</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Spaghetti/Rigatoni napoletana</h3>
+            
+            <div class="price">8,50 €</div>
+          </div>
+          <p class="desc">mit Tomatensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">54</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Spaghetti Manfredonia</h3>
+            
+            <div class="price">9,00 €</div>
+          </div>
+          <p class="desc">mit Knoblauch, Olivenöl und scharfer Peperoni</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">55</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Spaghetti carbonara</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">mit gekochtem Schinken, Sahne und Ei</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">56</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Spaghetti pescatora</h3>
+            
+            <div class="price">16,00 €</div>
+          </div>
+          <p class="desc">mit frische Meeresfrüchte, Shrimps und Gambas</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">57</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Spaghetti Don Peppino</h3>
+            
+            <div class="price">16,00 €</div>
+          </div>
+          <p class="desc">mit Rucola, Shrimps, Knoblauch und Gambas in Tomatensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">58</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Spaghetti tacchino</h3>
+            
+            <div class="price">15,50 €</div>
+          </div>
+          <p class="desc">mit Pute, Erbsen, Zwiebel und Sahnesauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">59</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Spaghetti tonno</h3>
+            
+            <div class="price">16,50 €</div>
+          </div>
+          <p class="desc">mit Thunfisch, frischen Tomaten in einer Zitronensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">60</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Tagliatelle all´ emiliana</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">hausgemachte Bandnudeln mit gekochtem Schinken, frische Champignons und Sahne</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">61</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Tagliatelle al salmone</h3>
+            
+            <div class="price">17,50 €</div>
+          </div>
+          <p class="desc">hausgemachte Bandnudeln mit frischem Lachs, Cognac und Tomaten-Sahnesauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">62</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Tagliatelle in umido con calamari</h3>
+            
+            <div class="price">17,50 €</div>
+          </div>
+          <p class="desc">hausgemachte Bandnudeln mit Tintenfisch in Tomatensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">63</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Tagliolini al limone</h3>
+            
+            <div class="price">15,00 €</div>
+          </div>
+          <p class="desc">hausgemachte Bandnudeln mit einer Zitronensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">64</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Rigatoni 4 formaggi</h3>
+            
+            <div class="price">16,00 €</div>
+          </div>
+          <p class="desc">mit 4 versch. Käsesorten</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">65</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Rigatoni alla panna</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">mit gekochtem Schinken und Sahnesauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">66</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Rigatoni mare e monti</h3>
+            
+            <div class="price">16,00 €</div>
+          </div>
+          <p class="desc">mit Knoblauch, frischen Champignons, Shrimps, Tomatensauce und Sahne</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">67</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Rigatoni Signora</h3>
+            
+            <div class="price">13,50 €</div>
+          </div>
+          <p class="desc">mit frischen Champignons, gekochtem Schinken und Cognac an Sahnesauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">68</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Rigatoni salsiccia</h3>
+            
+            <div class="price">17,50 €</div>
+          </div>
+          <p class="desc">mit frischen Champignons, Salsiccia Tomatensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">69</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Tortellini panna e prosciutto</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">mit gekochtem Schinken und Sahnesauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">70</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Tortellini Signora</h3>
+            
+            <div class="price">15,50 €</div>
+          </div>
+          <p class="desc">mit Pfifferlinge, Erbsen, Champignon, Tomaten, Zucchini, Paprika und Bolognesesauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">71</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Penne amatriciana</h3>
+            
+            <div class="price">11,50 €</div>
+          </div>
+          <p class="desc">mit Speck und Zwiebeln</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">72</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Penne all´ arrabbiata</h3>
+            
+            <div class="price">10,50 €</div>
+          </div>
+          <p class="desc">mit Oliven und scharfer Tomatensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">73</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Penne zucchine e gamberetti</h3>
+            
+            <div class="price">14,50 €</div>
+          </div>
+          <p class="desc">mit Zucchini und Shrimps</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">74</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Penne spinaci e gorgonzola</h3>
+            
+            <div class="price">14,50 €</div>
+          </div>
+          <p class="desc">mit Spinat und Gorgonzola</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">75</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Gnocchi sorrentina</h3>
+            
+            <div class="price">12,50 €</div>
+          </div>
+          <p class="desc">mit Tomaten und Mozzarella</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">76</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Gnocchi bolognese</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">mit Hackfleischsauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">77</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Rigatoni Chef</h3>
+            
+            <div class="price">13,50 €</div>
+          </div>
+          <p class="desc">mit verschiedenem frischem Gemüse und Tomatensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">78</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Rigatoni Don Carlos</h3>
+            
+            <div class="price">16,50 €</div>
+          </div>
+          <p class="desc">mit Filetspitzen mit einer Rotwein-Tomatensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">79</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Quadrofiglio di pasta mista (ab 2 Personen)</h3>
+            
+            <div class="price">30,00 €</div>
+          </div>
+          <p class="desc">gemischte Nudel</p>
+        </div>
+      </article>
+  </div>
+  
+</section>
+
+<section class="menu-section" id="risotto" data-watermark="RISOTTO">
+  <div class="section-header">
+    <div class="section-index">06</div>
+    <div>
+      <div class="section-kicker">Reisgerichte</div>
+      <h2>Risotto</h2>
+    </div>
+  </div>
+  <div class="dish-list">
+    
+      <article class="dish">
+        <div class="num">80</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Risotto alla Milanese</h3>
+            
+            <div class="price">16,50 €</div>
+          </div>
+          <p class="desc">mit Safransauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">81</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Risotto pescatore</h3>
+            
+            <div class="price">16,50 €</div>
+          </div>
+          <p class="desc">mit Meeresfrüchte</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">82</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Risotto ai gamberetti e zucchine</h3>
+            
+            <div class="price">16,00 €</div>
+          </div>
+          <p class="desc">mit Shrimps und Zucchini</p>
+        </div>
+      </article>
+  </div>
+  
+</section>
+
+<section class="menu-section" id="alforno" data-watermark="AL FORNO">
+  <div class="section-header">
+    <div class="section-index">07</div>
+    <div>
+      <div class="section-kicker">Überbackene Gerichte</div>
+      <h2>Specialità al Forno</h2>
+    </div>
+  </div>
+  <div class="dish-list">
+    
+      <article class="dish">
+        <div class="num">90</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Lasagne casalinga</h3>
+            
+            <div class="price">12,50 €</div>
+          </div>
+          <p class="desc">Hausgemachte Lasagne</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">91</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Cannelloni farciti</h3>
+            
+            <div class="price">12,50 €</div>
+          </div>
+          <p class="desc">Cannelloni gefüllt mit Hackfleisch</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">92</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Combinazione di pasta mista</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">Versch. Nudel</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">93</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Rigatoni al forno</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">Überbackene Rigatoni</p>
+        </div>
+      </article>
+  </div>
+  
+</section>
+
+<section class="menu-section" id="pizze" data-watermark="PIZZE">
+  <div class="section-header">
+    <div class="section-index">08</div>
+    <div>
+      <div class="section-kicker">Pizzen</div>
+      <h2>Pizze</h2>
+    </div>
+  </div>
+  <div class="dish-list">
+    
+      <article class="dish">
+        <div class="num">100</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza Margherita</h3>
+            
+            <div class="price">7,50 €</div>
+          </div>
+          <p class="desc">mit Tomaten und Mozzarella</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">101</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza Ferrari</h3>
+            
+            <div class="price">15,50 €</div>
+          </div>
+          <p class="desc">mit Salsiccia, frische Champignons und Kirschtomaten</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">102</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza casalinga</h3>
+            
+            <div class="price">12,50 €</div>
+          </div>
+          <p class="desc">mit Thunfisch, Zwiebel und Kapern</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">103</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza 4 stagioni (4 Jahreszeiten)</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">mit Salami, frische Champignons, gekochtem Schinken und Artischocken</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">104</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza ortolana</h3>
+            
+            <div class="price">12,50 €</div>
+          </div>
+          <p class="desc">mit Mozzarella und verschieden gegrilltes Gemüse</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">105</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza Juve</h3>
+            
+            <div class="price">14,50 €</div>
+          </div>
+          <p class="desc">mit Mozzarella, Rohschinken, Rucola und Parmesanscheiben</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">106</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza marinara</h3>
+            
+            <div class="price">14,50 €</div>
+          </div>
+          <p class="desc">mit frischen Meeresfrüchte und Shrimps</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">107</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza Galbani</h3>
+            
+            <div class="price">13,50 €</div>
+          </div>
+          <p class="desc">mit Gorgonzola und Spinat</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">108</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza piccante</h3>
+            
+            <div class="price">10,50 €</div>
+          </div>
+          <p class="desc">mit frischen Champignons, Paprika, Salami und scharfer Peperoni</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">109</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza campagnola</h3>
+            
+            <div class="price">10,50 €</div>
+          </div>
+          <p class="desc">mit Salami, gekochtem Schinken und frische Champignons</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">110</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza della Signora</h3>
+            
+            <div class="price">15,50 €</div>
+          </div>
+          <p class="desc">mit Mozzarella, Pfifferlinge, Oliven, Artischocken und Rohschinken</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">111</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza Hawaii</h3>
+            
+            <div class="price">10,50 €</div>
+          </div>
+          <p class="desc">mit gekochtem Schinken und Ananas</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">112</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza stella di mare</h3>
+            
+            <div class="price">14,50 €</div>
+          </div>
+          <p class="desc">mit Mozzarella, Shrimps, Rucola und Lachs</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">113</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Calzone</h3>
+            
+            <div class="price">10,50 €</div>
+          </div>
+          <p class="desc">gefüllt mit Mozzarella, frischen Champignons, Salami und gekochtem Schinken</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">114</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Pizza 4 formaggi</h3>
+            
+            <div class="price">14,50 €</div>
+          </div>
+          <p class="desc">mit 4 versch. Käsesorten</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">115</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Flammkuchen in versch. Varianten</h3>
+            
+            <div class="price">11,00 €</div>
+          </div>
+          <p class="desc">mit Crème fraîche, Speck und Zwiebeln</p>
+        </div>
+      </article>
+  </div>
+  <div class="note-box"><ul><li>Jede weitere Zutat: 1,50 €</li><li>Jede weitere Fischzutat: 2,00 €</li><li>Shrimps: 3,00 €</li><li>Parmaschinken: 3,00 €</li></ul></div>
+</section>
+
+<section class="menu-section" id="vitello" data-watermark="VITELLO">
+  <div class="section-header">
+    <div class="section-index">09</div>
+    <div>
+      <div class="section-kicker">vom Kalb</div>
+      <h2>Carne di Vitello</h2>
+    </div>
+  </div>
+  <div class="dish-list">
+    
+      <article class="dish">
+        <div class="num">120</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Piccata milanese</h3>
+            
+            <div class="price">24,50 €</div>
+          </div>
+          <p class="desc">Kalbsschnitzel mit Parmesan und Tomatensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">121</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Paillard alla griglia</h3>
+            
+            <div class="price">20,50 €</div>
+          </div>
+          <p class="desc">Kalbsschnitzel Natur mit Zitrone und Kräuterbutter</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">122</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Scaloppina Valdostana</h3>
+            
+            <div class="price">22,50 €</div>
+          </div>
+          <p class="desc">Kalbsmedaillons mit Schinken und Käse überbacken und Bratsauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">123</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Saltimbocca alla romana</h3>
+            
+            <div class="price">23,50 €</div>
+          </div>
+          <p class="desc">Kalbsmedaillons mit Salbei und Rohschinken in Weißweinsauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">124</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Scaloppina milanese</h3>
+            
+            <div class="price">19,50 €</div>
+          </div>
+          <p class="desc">Wiener Schnitzel</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">125</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Scaloppina Signora</h3>
+            
+            <div class="price">23,50 €</div>
+          </div>
+          <p class="desc">Kalbsmedaillons in Champignon-Cognac-Sahnesauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">126</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Scaloppina al marsala</h3>
+            
+            <div class="price">22,50 €</div>
+          </div>
+          <p class="desc">Kalbsmedaillons in Marsalasauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">127</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Scaloppina al prosecco</h3>
+            
+            <div class="price">22,50 €</div>
+          </div>
+          <p class="desc">Kalbsmedaillons in Proseccosauce</p>
+        </div>
+      </article>
+  </div>
+  <div class="note-box"><ul><li>Beilagen: Reis, Gemüse, Nudeln, Pommes Frites, Salzkartoffeln oder Salat – je Portion 2,50 €</li><li>Bratkartoffel, Bandnudeln – je Portion 3,00 €</li></ul></div>
+</section>
+
+<section class="menu-section" id="manzo" data-watermark="MANZO">
+  <div class="section-header">
+    <div class="section-index">10</div>
+    <div>
+      <div class="section-kicker">vom Rind</div>
+      <h2>Carne di Manzo</h2>
+    </div>
+  </div>
+  <div class="dish-list">
+    
+      <article class="dish">
+        <div class="num">135</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Entrecote alla griglia, 300 gr.</h3>
+            
+            <div class="price">24,50 €</div>
+          </div>
+          <p class="desc">Rumpsteak vom Grill mit Zitrone oder Kräuterbutter</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">136</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Entrecote alle cipolle</h3>
+            
+            <div class="price">25,50 €</div>
+          </div>
+          <p class="desc">Rumpsteak mit Zwiebel und Bratsauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">137</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Entrecôte pizzaiola</h3>
+            
+            <div class="price">25,50 €</div>
+          </div>
+          <p class="desc">Rumpsteak mit scharfer Tomatensauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">138</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Tagliata di manzo sul letto di rucola e parmigiano, 280 gr.</h3>
+            
+            <div class="price">29,50 €</div>
+          </div>
+          <p class="desc">Rumpsteak auf Rucolabett mit Parmesan und Balsamico Essig</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">139</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Filetto alla griglia</h3>
+            
+            <div class="price">29,50 €</div>
+          </div>
+          <p class="desc">Filetsteak vom Grill mit Zitrone oder Kräuterbutter</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">140</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Filetto Madagaskar</h3>
+            
+            <div class="price">30,50 €</div>
+          </div>
+          <p class="desc">Filetsteak mit grünen Pfeffer, Silberzwiebel in Tomaten-Sahnesauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">141</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Filetto Signora</h3>
+            
+            <div class="price">32,50 €</div>
+          </div>
+          <p class="desc">Filetsteak mit rotem Pfeffer, Pfifferlinge, Silberzwiebel an Cognac-Sahnesauce</p>
+        </div>
+      </article>
+
+      <article class="dish">
+        <div class="num">142</div>
+        <div class="dish-main">
+          <div class="dish-top">
+            <h3>Filetto al pepe</h3>
+            
+            <div class="price">32,50 €</div>
+          </div>
+          <p class="desc">Filetsteak mit Pfeffer</p>
+        </div>
+      </article>
+  </div>
+  <div class="note-box"><ul><li>Beilagen: Reis, Gemüse, Nudeln, Pommes Frites, Salzkartoffeln oder Salat – je Portion 2,50 €</li><li>Bratkartoffel, Bandnudeln – je Portion 3,00 €</li></ul></div>
+</section>
+</main>
+
+<section class="closing">
+  <blockquote>„A tavola non s’invecchia mai“</blockquote>
+  <div class="translation">„Beim Essen altert man nie“</div>
+  <p>Wenn Ihnen unsere Speisekarte noch nicht genügend „à la Carte“ sein sollte, stellt Carlo ein Menü ganz nach Ihren Wünschen und nach Ihrem Geschmack zusammen.</p>
+  <p>Wir haben auch Geschenkgutscheine. Unsere Mitarbeiter beraten Sie gerne.</p>
+</section>
+
+<footer>
+  Buon appetito! · Preise inklusive Bedienung und Mehrwertsteuer
+</footer>
+
+<button class="floating" id="openDrawer" type="button">☰ Kategorien</button>
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Kategorien">
+  <div class="drawer-head">
+    <strong>Kategorien</strong>
+    <button class="drawer-close" id="closeDrawer" type="button" aria-label="Schließen">×</button>
+  </div>
+  <div class="drawer-grid">
+    <a href="#aperitivo" class="drawer-link"><span>01</span>Aperitivo</a>
+<a href="#antipasti" class="drawer-link"><span>02</span>Antipasti</a>
+<a href="#zuppe" class="drawer-link"><span>03</span>Zuppe</a>
+<a href="#insalate" class="drawer-link"><span>04</span>Insalate</a>
+<a href="#pasta" class="drawer-link"><span>05</span>Pasta</a>
+<a href="#risotto" class="drawer-link"><span>06</span>Risotto</a>
+<a href="#alforno" class="drawer-link"><span>07</span>Specialità al Forno</a>
+<a href="#pizze" class="drawer-link"><span>08</span>Pizze</a>
+<a href="#vitello" class="drawer-link"><span>09</span>Carne di Vitello</a>
+<a href="#manzo" class="drawer-link"><span>10</span>Carne di Manzo</a>
+  </div>
+</div>
+
+<script>
+const splash = document.getElementById('splash');
+setTimeout(() => {
+  splash.classList.add('hide');
+  document.body.classList.remove('lock');
+}, 1000);
+
+const drawer = document.getElementById('drawer');
+const backdrop = document.getElementById('drawerBackdrop');
+const openBtn = document.getElementById('openDrawer');
+const closeBtn = document.getElementById('closeDrawer');
+
+function openDrawer(){
+  drawer.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDrawer(){
+  drawer.classList.remove('open');
+  backdrop.classList.remove('open');
+}
+openBtn.addEventListener('click', openDrawer);
+closeBtn.addEventListener('click', closeDrawer);
+backdrop.addEventListener('click', closeDrawer);
+document.querySelectorAll('.drawer-link').forEach(a => a.addEventListener('click', closeDrawer));
+</script>
+</body>
+</html>
