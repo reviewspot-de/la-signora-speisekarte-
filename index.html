@@ -4,6 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>La Signora – Digitale Speisekarte</title>
+<!--
+  Kategorie-Bilder: Pexels (kostenlose Stockfotos, Stand 28.10.2026)
+  Cocktail: https://www.pexels.com/photo/close-up-of-cocktail-16021251/
+  Antipasti: https://www.pexels.com/photo/rustic-italian-antipasto-platter-with-bread-and-cheese-29068724/
+  Salat: https://www.pexels.com/photo/fresh-salad-bowl-against-black-background-36999170/
+  Pasta: https://www.pexels.com/photo/creamy-penne-pasta-in-dark-setting-31094836/
+  Lasagne: https://www.pexels.com/photo/baked-lasagna-on-a-black-plate-5949894/
+  Pizza: https://www.pexels.com/photo/delicious-pepperoni-pizza-with-fresh-ingredients-31300965/
+  Fleisch: https://www.pexels.com/photo/top-view-of-gourmet-steak-with-vegetables-on-plate-35546719/
+-->
+
 <style>
 :root{
   --bg:#080808;
@@ -185,6 +196,70 @@ a{color:inherit}
   font-size:clamp(30px,7vw,44px);
   line-height:1;
 }
+
+.category-visual{
+  position:relative;z-index:2;
+  height:clamp(155px,42vw,250px);
+  margin:18px 0 4px;
+  overflow:hidden;
+  border:1px solid #2f2f2f;
+  border-radius:18px;
+  background:#0b0b0b;
+}
+.category-visual img{
+  width:100%;height:100%;display:block;
+  object-fit:cover;
+  filter:saturate(.88) contrast(1.07) brightness(.72);
+  transform:scale(1.015);
+}
+.category-visual::before{
+  content:"";
+  position:absolute;inset:0;z-index:1;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.08) 45%,rgba(8,8,8,.70) 100%),
+    linear-gradient(90deg,rgba(0,0,0,.22),transparent 42%,rgba(0,0,0,.08));
+  pointer-events:none;
+}
+.category-visual::after{
+  content:"";
+  position:absolute;left:18px;right:18px;bottom:12px;z-index:2;
+  height:3px;border-radius:999px;
+  background:linear-gradient(90deg,var(--green) 0 33%,rgba(245,245,241,.9) 33% 66%,var(--red) 66% 100%);
+  opacity:.85;
+}
+.menu-legend{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  margin:7px 4px 2px;
+  color:#8f887f;font-size:12px;
+}
+.legend-item{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 9px;border:1px solid #2c2c2c;border-radius:999px;
+  background:rgba(255,255,255,.018);
+}
+.diet-tag{
+  display:inline-flex;align-items:center;justify-content:center;
+  vertical-align:middle;
+  margin-left:7px;
+  width:22px;height:22px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.13);
+  background:rgba(255,255,255,.035);
+  font-size:12px;line-height:1;
+  transform:translateY(-1px);
+}
+.diet-tag.spicy{
+  border-color:rgba(201,61,52,.34);
+  background:rgba(201,61,52,.10);
+}
+/* Bereits vorbereitet für eine spätere, vom Restaurant bestätigte Kennzeichnung. */
+.diet-tag.vegetarian{color:#8fcf9b;border-color:rgba(77,145,88,.36);background:rgba(77,145,88,.10)}
+.diet-tag.vegan{color:#a5d7aa;border-color:rgba(80,160,100,.36);background:rgba(80,160,100,.10);font-size:10px;font-weight:800}
+@media(max-width:520px){
+  .category-visual{height:170px;margin-top:15px;border-radius:16px}
+  .category-visual::after{left:14px;right:14px;bottom:10px}
+}
+
 .dish-list{position:relative;z-index:2}
 .dish{
   display:grid;
@@ -310,6 +385,11 @@ footer{
   #splash{transition:none}
   .drawer,.drawer-backdrop{transition:none}
 }
+
+@media(min-width:760px){
+  .category-visual{height:240px;margin:20px 0 6px}
+}
+
 </style>
 </head>
 <body class="lock">
@@ -348,6 +428,10 @@ footer{
 </nav>
 
 <main class="menu-wrap">
+  <div class="menu-legend" aria-label="Kennzeichnungen">
+    <span class="legend-item"><span aria-hidden="true">🌶️</span> scharf</span>
+  </div>
+
   
 <section class="menu-section" id="aperitivo" data-watermark="APERITIVO">
   <div class="section-header">
@@ -356,6 +440,9 @@ footer{
       <div class="section-kicker">Aperitif</div>
       <h2>Aperitivo</h2>
     </div>
+  </div>
+  <div class="category-visual">
+    <img src="https://images.pexels.com/photos/16021251/pexels-photo-16021251.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Eleganter Cocktail mit Orangengarnitur auf dunklem Hintergrund" loading="lazy" decoding="async">
   </div>
   <div class="dish-list">
     
@@ -489,6 +576,9 @@ footer{
       <div class="section-kicker">Vorspeisen</div>
       <h2>Antipasti</h2>
     </div>
+  </div>
+  <div class="category-visual">
+    <img src="https://images.pexels.com/photos/29068724/pexels-photo-29068724.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Italienische Antipasti mit Brot, Käse und Aufschnitt" loading="lazy" decoding="async">
   </div>
   <div class="dish-list">
     
@@ -672,6 +762,9 @@ footer{
       <h2>Insalate</h2>
     </div>
   </div>
+  <div class="category-visual">
+    <img src="https://images.pexels.com/photos/36999170/pexels-photo-36999170.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Frischer Salat auf dunklem Hintergrund" loading="lazy" decoding="async">
+  </div>
   <div class="dish-list">
     
       <article class="dish">
@@ -817,6 +910,9 @@ footer{
       <h2>Pasta</h2>
     </div>
   </div>
+  <div class="category-visual">
+    <img src="https://images.pexels.com/photos/31094836/pexels-photo-31094836.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Pasta in einer Pfanne mit dunkler, stimmungsvoller Beleuchtung" loading="lazy" decoding="async">
+  </div>
   <div class="dish-list">
     
       <article class="dish">
@@ -847,7 +943,7 @@ footer{
         <div class="num">54</div>
         <div class="dish-main">
           <div class="dish-top">
-            <h3>Spaghetti Manfredonia</h3>
+            <h3>Spaghetti Manfredonia<span class="diet-tag spicy" title="Scharf" aria-label="Scharf">🌶️</span></h3>
             
             <div class="price">9,00 €</div>
           </div>
@@ -1063,7 +1159,7 @@ footer{
         <div class="num">72</div>
         <div class="dish-main">
           <div class="dish-top">
-            <h3>Penne all´ arrabbiata</h3>
+            <h3>Penne all´ arrabbiata<span class="diet-tag spicy" title="Scharf" aria-label="Scharf">🌶️</span></h3>
             
             <div class="price">10,50 €</div>
           </div>
@@ -1215,6 +1311,9 @@ footer{
       <h2>Specialità al Forno</h2>
     </div>
   </div>
+  <div class="category-visual">
+    <img src="https://images.pexels.com/photos/5949894/pexels-photo-5949894.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Lasagne auf einem dunklen Teller" loading="lazy" decoding="async">
+  </div>
   <div class="dish-list">
     
       <article class="dish">
@@ -1275,6 +1374,9 @@ footer{
       <div class="section-kicker">Pizzen</div>
       <h2>Pizze</h2>
     </div>
+  </div>
+  <div class="category-visual">
+    <img src="https://images.pexels.com/photos/31300965/pexels-photo-31300965.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Italienische Pizza mit frischen Zutaten auf dunklem Hintergrund" loading="lazy" decoding="async">
   </div>
   <div class="dish-list">
     
@@ -1378,7 +1480,7 @@ footer{
         <div class="num">108</div>
         <div class="dish-main">
           <div class="dish-top">
-            <h3>Pizza piccante</h3>
+            <h3>Pizza piccante<span class="diet-tag spicy" title="Scharf" aria-label="Scharf">🌶️</span></h3>
             
             <div class="price">10,50 €</div>
           </div>
@@ -1480,6 +1582,9 @@ footer{
       <div class="section-kicker">vom Kalb</div>
       <h2>Carne di Vitello</h2>
     </div>
+  </div>
+  <div class="category-visual">
+    <img src="https://images.pexels.com/photos/35546719/pexels-photo-35546719.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Fleischgericht mit Gemüse auf einem dunklen Hintergrund" loading="lazy" decoding="async">
   </div>
   <div class="dish-list">
     
@@ -1620,7 +1725,7 @@ footer{
         <div class="num">137</div>
         <div class="dish-main">
           <div class="dish-top">
-            <h3>Entrecôte pizzaiola</h3>
+            <h3>Entrecôte pizzaiola<span class="diet-tag spicy" title="Scharf" aria-label="Scharf">🌶️</span></h3>
             
             <div class="price">25,50 €</div>
           </div>
